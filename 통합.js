@@ -1,0 +1,215 @@
+//변수
+let posX = 400; // 시작 X 위치
+let posY = 100; // 시작 Y 위치
+let gumbaX = 50; // 굼바 x위치
+let gumbaY = 450; // 굼바 y위치
+let targetX = 200; // 목표 X 위치
+let targetY = 100; // 목표 Y 위치
+let easing = 0.1; // 이동 속도 (Easing)
+let sal = 0.0125;
+let angle = 0;
+let size = 4
+let eat = 0; // 버섯 먹었는지 확인
+let gumbascale = 1;//굼바 스케일
+
+function setup(){
+  createCanvas(800,600);
+ 
+  
+}
+
+//메인
+function draw(){
+  background(800);
+  strokeWeight(1);
+  drawGoomba(gumbaX,gumbaY, angle, size);//굼바 그리기
+  for (let i = 100; i < width; i += 100) {
+    line(i, 0, i, height); // 세로선
+    line(0, i, width, i); // 가로선
+  }//세로선 ,가로선 그리기
+  mushroomdraw();//버섯 그리기
+}
+
+
+
+
+
+
+
+
+
+
+//함수
+function mushroomdraw() {
+  if (gumbaX == 180  ) {
+    eat = 1;
+  }
+  if (eat == 0){
+  
+  // 현재 위치와 목표 위치 간의 거리를 계산합니다.
+  let dx = targetX - posX;
+  let dy = targetY - posY;
+
+  // Easing을 사용하여 부드러운 이동을 구현합니다.
+  posX += dx * easing;
+  posY += dy * easing;
+
+  // 현재 위치를 바탕으로 그림을 그립니다.
+  translate(posX, posY);
+  if (sal >= 0.125) sal = 0.125;
+  scale(sal = sal + 0.01); // 캔버스 크기를 1/8로 축소합니다.
+
+  fill(0);
+  strokeWeight(10);
+  stroke(0, 0, 0);
+  push();
+  beginShape();
+  curveVertex(216, 416);
+  curveVertex(140, 373);
+  curveVertex(97, 306);
+  curveVertex(110, 225);
+  curveVertex(129, 199);
+  curveVertex(163, 166);
+  curveVertex(247, 108);
+  curveVertex(287, 89);
+  curveVertex(323, 81);
+  curveVertex(384, 71);
+  curveVertex(451, 72);
+  curveVertex(509, 91);
+  curveVertex(595, 126);
+  curveVertex(648, 176);
+  curveVertex(697, 239);
+  curveVertex(695, 326);
+  curveVertex(635, 387);
+  curveVertex(591, 412);
+  curveVertex(592, 407);
+  curveVertex(535, 365);
+  curveVertex(568, 381);
+  curveVertex(522, 357);
+  curveVertex(464, 343);
+  curveVertex(402, 341);
+  curveVertex(344, 342);
+  curveVertex(287, 357);
+  curveVertex(241, 381);
+  fill(255, 0, 0);
+  endShape(CLOSE);
+  pop();
+  push();
+  beginShape();
+  fill(251, 206, 177);
+  ellipse(400, 400, 380, 145);
+  fill(0, 0, 0);
+  ellipse(347, 399, 20, 40);
+  ellipse(468, 400, 20, 40);
+  endShape(CLOSE);
+  fill(255, 255, 255);
+  ellipse(402, 188, 200, 160);
+  pop();
+
+  // 목표지점에 도달했는지 확인하고, 도달했다면 목표지점을 변경합니다.
+  if (dist(posX, posY, targetX, targetY) < 1) {
+    targetX = 200;
+    targetY = 420;
+  }}
+}
+
+
+
+function drawGoomba(x, y, rotation, size) {
+  push();
+  translate(x, y); // 회전 중심을 굼바의 중심으로 이동
+  rotate(rotation); // 회전
+  scale(1); // 크기 조절
+  if (eat == 0) scale(1);
+    else {
+      if (gumbascale <1.5) gumbascale+=0.1 ;
+      scale(gumbascale);
+      gumbaY = 450- 20;}
+   
+  noStroke();
+  
+  fill(204, 153, 102); // 굼바의 몸통
+  circle(0, 25, 30);
+  
+  fill(102, 51, 19); // 굼바 얼굴
+  beginShape();
+  curveVertex(14,-22);
+  curveVertex(14,-22);
+  curveVertex(0, -40);
+  curveVertex(-14,-22);
+  curveVertex(-14,-22);
+  vertex(-14,-22);
+  vertex(-30,3);
+  vertex(-30,3);
+  curveVertex(-30,3);
+  curveVertex(-40,20);
+  curveVertex(-30,22);
+  curveVertex(-30,22);
+  vertex(-30,22);
+  vertex(30,22);
+  vertex(30,22);
+  curveVertex(30,22);
+  curveVertex(40,20);
+  curveVertex(30,3);
+  curveVertex(30,3);
+  vertex(30,3);
+  vertex(14,-22);
+  vertex(14,-22);
+  endShape();
+  
+  fill(51, 0, 0); // 굼바의 발
+  circle(-15, 40, 20);
+  circle(15, 40, 20);
+  
+  stroke(1) //굼바의 눈
+  fill(240);
+  ellipse(-10, -5, 15, 20);
+  ellipse(10, -5, 15, 20);
+  noStroke();
+  
+  push(); //이빨
+  rotate(+0.23);
+  triangle(17,10,20,2,23,10)
+  pop();
+  
+  push(); //이빨
+  rotate(-0.23);
+  triangle(-17,10,-20,2,-23,10)
+  pop();
+  
+  fill(10); //굼바의 눈동자
+  ellipse(-7, -3, 4, 8);
+  ellipse(7, -3, 4, 8);
+  
+  push(); //오른쪽 눈썹
+  rotate(+0.9);
+  rect(-7, -32, 3, 25);
+  pop();
+  
+  push(); //왼쪽 눈썹
+  rotate(-0.9);
+  rect(4, -32, 3, 25);
+  pop();
+  
+  
+  stroke(3); //굼바의 입 모양 그리기
+  noFill();
+  beginShape();
+  curveVertex(-20, 15);
+  curveVertex(-20, 15);
+  curveVertex(0, 10);
+  curveVertex(20, 15);
+  curveVertex(20, 15);
+  endShape();
+  noStroke();
+  
+  pop();
+}
+
+function keyPressed() {
+  if (keyCode === LEFT_ARROW) {
+    gumbaX -= 10; // 왼쪽으로 이동
+  } else if (keyCode === RIGHT_ARROW) {
+    gumbaX += 10; // 오른쪽으로 이동
+  }
+}
