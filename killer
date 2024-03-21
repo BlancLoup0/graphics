@@ -1,0 +1,54 @@
+function setup() {
+  createCanvas(400,400);
+}
+
+function draw() {
+  background(220);
+  noStroke();
+  drawKiller(width/2,height/2);
+}
+
+function drawKiller(x,y, rotation, size) {
+  push();
+  translate(x, y);
+  rotate(rotation);
+  scale(size);
+  fill(25);
+  beginShape();
+  vertex(0,-50);
+  bezierVertex(-120,-50,-120,50,0,50);
+  endShape(CLOSE);
+  rect(0,-50,30,100);
+  rect(30,-45,5,90);
+  rect(40,-50,30,100);
+  fill(255);
+  rect(35,-45,5,90);
+  arc(-60,-20,40,40,PI+HALF_PI+QUARTER_PI,HALF_PI+QUARTER_PI,CHORD);
+  beginShape();
+  vertex(-10,-2);
+  bezierVertex(-20,-23,8,-23,10,-5);
+  bezierVertex(-5,-15,-5,-17,-10,-2);
+  endShape();
+  beginShape();
+  vertex(3,-5);
+  quadraticVertex(20,10,-10,20);
+  vertex(-15,10);
+  quadraticVertex(10,5,-5,-5);
+  quadraticVertex(-8,-10,3,-5);
+  endShape();
+  beginShape();
+  curveVertex(-8,20);
+  curveVertex(-8,20);
+  curveVertex(-15,28);
+  curveVertex(-25,30);
+  curveVertex(-35,10);
+  curveVertex(-20,2);
+  curveVertex(-10,15);
+  curveVertex(-8,10);
+  curveVertex(-8,10);
+  endShape();
+  fill(20);
+  ellipse(-61,-17,10,15);
+  ellipse(-28,6,9,6);
+  pop();
+}
