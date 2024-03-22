@@ -18,9 +18,10 @@ let angle = 0;
 let size = 4
 let eat = 0; // 버섯 먹었는지 확인
 let gumbascale = 1;//굼바 스케일
-let ks = 1000;
-
-
+let kx = 1000;
+let ky = 50;
+let kr = 0;
+let ks = 0.7;
 function setup(){
   createCanvas(800,600);
  
@@ -31,7 +32,7 @@ function setup(){
 function draw(){
   background(800);
   strokeWeight(1);
-  drawKiller(ks,150,0,0.7);
+  drawKiller(kx,ky,kr,ks);
   drawGoomba(gumbaX,gumbaY, angle, size);//굼바 그리기
   for (let i = 100; i < width; i += 100) {
     line(i, 0, i, height); // 세로선
@@ -128,8 +129,12 @@ function mushroomdraw() {
 
 function drawKiller(x,y, rotation, size) {
   push();
-  ks=ks-5;
-  if (ks<-400) ks=1000;
+  kx=kx-3;
+  if (kx<160) {
+  ky=ky+5; kx=160; kr=kr+0.5; ks=ks-0.015;
+    if (ks<0){ kx=1200; ky=50; kr=0; ks=0.7;
+}
+}             
   noStroke();
   translate(x, y);
   rotate(rotation);
