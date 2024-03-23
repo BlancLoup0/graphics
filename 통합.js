@@ -1,26 +1,24 @@
 let blockGround; //바닥 블록
 let blockBrick; //벽돌 블록
 let blockItemBrick; //아이템 블록
-
-
+let blockHardBrick; //단단한 블록
 let b1 = 0; //블록 1 변수
-let eatb1 = 0; //블록1의 아이템 호출 
-let ableb1 = 0; //블록1의 아이템 호출 
+let b1Hit = 0; //b1 블록 히트 여부
 let b2 = 0; //블록 2 변수
 let b3 = 0; //블록 3 변수
 let b4 = 0; //블록 4 변수
 
-let posX = 300; // 버섯 시작 X 위치
-let posY = 100; //버섯 시작 y위치 
-let targetX = 100; // 버섯 목표 X 위치
-let targetY = 100; // 버섯 목표 Y 위치
-let easing = 0.1; // 이동 속도 (Easing)
-let sal = 0.0125; //버섯 크기
+let mushX = 200; // 버섯 시작 X 위치
+let mushY = 140; //버섯 시작 y위치 
+let mushRotation = 0; //버섯 회전
+let mushSize = 1; //버섯 크기
+let mushSpawn = 0; //버섯 소환 
+let mushM = -2 //버섯섯 이동변수
 
 let i = 0; // 굼바 점프 변수
 let goombaX = 150; //굼바 x좌표
 let goombaY = 450; //굼바 y좌표
-let goombaAngle = 0; //굼바의 회전정도
+let goombaRotation = 0; //굼바의 회전
 let goombaSize = 1 //굼바의 크기(기본 100x100)
 let goombaJump = false; //굼바 현재 점프 상태
 let jumpHeight = 0; //굼바의 점프 높이
@@ -34,7 +32,7 @@ function preload() {  // 이미지 미리 로드
   blockGround = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/ground.png');
   blockBrick = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/brick.png');
   blockItemBrick = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/itemBrick.png');
-  
+  blockHardBrick = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/hardBrick.png');
 }
 
 function setup() {
@@ -42,8 +40,34 @@ function setup() {
 }
 
 function draw() {
-  background(220); 
+  background(220);
+  drawBlock();  
   
+  goombaMove(); //굼바 움직이기
+  drawGoomba(goombaX, goombaY - jumpHeight, goombaRotation, goombaSize); //굼바 소환
+  
+  drawKiller(kx,ky,kr,ks); //킬러 소환
+  
+  if(b1 == 20 && goombaSize == 1) {
+    b1Hit = 1; //블록 변환
+    mushSpawn = 1; 
+  } //버섯 소환 체크
+  
+  if(mushSpawn) {
+    mushroomDraw(mushX, mushY - b1, mushRotation, mushSize); //버섯 소환
+    mushroomMove();
+    let distance = dist(mushX + 50, mushY + 10, goombaX, goombaY);
+    if(distance<50) {
+      mushSpawn = 0;
+      goombaSize = 1.5;
+      goombaY -= 25
+    }
+  }
+  
+  drawFireFlowerItem(550, 150, 0, 1); //꽃 그리기
+}
+
+function drawBlock() { //블록을 생성하는 함수
   image(blockGround, 0, 500, 100, 100); //땅 생성
   image(blockGround, 100, 500, 100, 100);
   image(blockGround, 200, 500, 100, 100);
@@ -53,53 +77,14 @@ function draw() {
   image(blockGround, 600, 500, 100, 100);
   image(blockGround, 700, 500, 100, 100);
 
-  image(blockBrick, 0, 0, 100, 100); //킬러가 부딛히는 블록
+  image(blockHardBrick, 0, 0, 100, 100); //킬러가 부딛히는 블록
   
-  if (eatb1 == 0) image(blockItemBrick, 200, 200 - b1, 100, 100); //벽돌생성, 굼바가 점프시 위로 이동
+  if (!b1Hit) image(blockItemBrick, 200, 200 - b1, 100, 100); //벽돌생성, 굼바가 점프시 위로 이동
     else image(blockBrick, 200, 200 - b1, 100, 100);
   image(blockBrick, 300, 200 - b2, 100, 100);
   image(blockBrick, 400, 200 - b3, 100, 100);
   image(blockItemBrick, 500, 200 - b4, 100, 100);
-  
-  if (keyIsDown(LEFT_ARROW)) goombaX -= 3; //굼바의 좌우 이동
-  if (keyIsDown(RIGHT_ARROW)) goombaX += 3;
-  
-  if (goombaJump) { //굼바의 점프
-    i += 0.02;
-    jumpHeight = 120*sin(PI*i); //굼바의 점프 높이 조절
-    goombaAngle = 2*PI*i; //굼바가 점프하면서 회전
-    if (i > 1) {
-      i = 0;
-      goombaJump = false;
-    }    
-    if (i > 0.4 && i < 0.6 && goombaX >= 190 && goombaX <= 310) b1 = 20; //굼바가 점프할때 블록이동
-      else b1 = 0;
-    if (i > 0.4 && i < 0.6 && goombaX >= 290 && goombaX <= 410) b2 = 20;
-      else b2 = 0;
-    if (i > 0.4 && i < 0.6 && goombaX >= 390 && goombaX <= 510) b3 = 20;
-      else b3 = 0;
-    if (i > 0.4 && i < 0.6 && goombaX >= 490 && goombaX <= 610) b4 = 20;
-      else b4 = 0;
-  }
-  
-  strokeWeight(1);
-  drawGoomba(goombaX, goombaY - jumpHeight, goombaAngle, goombaSize); //굼바 그리기
-  drawKiller(kx,ky,kr,ks);
-  if  (  posX > goombaX - 80 && eatb1 == 1 && posY >400) 
-  { ableb1 = 1;
-    while(goombaSize <= 1.4) goombaSize += 0.1;
-   // 버섯블록 b1사용 완료
-  } //버섯 섭취 여부 확인 섭취시   스케일1.5조정
-  if (ableb1 == 0) mushroomdraw();
-     // 버섯을 소환하지 않았을때 버섯 처음 생성
-  
-}
-
-function keyPressed() { //점프 입력
-  if (keyCode === 32 && !goombaJump) {
-    goombaJump = true;
-  }
-}
+} 
 
 function drawGoomba(x, y, rotation, size) { //굼바 그리기
   push();
@@ -186,26 +171,44 @@ function drawGoomba(x, y, rotation, size) { //굼바 그리기
   pop();
 }
 
-
-function mushroomdraw() {
-  if ( b1 == 20 ) {
-    eatb1 = 1;
-  //블럭 1이 사용됨;
+function keyPressed() { //점프 입력
+  if (keyCode === 32 && !goombaJump) {
+    goombaJump = true;
   }
-  if (eatb1 == 1){
+}
+
+function goombaMove() { //굼바의 이동
+  if (keyIsDown(LEFT_ARROW)) goombaX -= 3; //굼바의 좌우 이동
+  if (keyIsDown(RIGHT_ARROW)) goombaX += 3;
   
-  // 현재 위치와 목표 위치 간의 거리를 계산합니다.
-  let dx = targetX - posX;
-  let dy = targetY - posY;
+  if (goombaJump) { //굼바의 점프
+    i += 0.02;
+    jumpHeight = 120*sin(PI*i); //굼바의 점프 높이 조절
+    goombaRotation = 2*PI*i; //굼바가 점프하면서 회전
+    if (i > 1) {
+      i = 0;
+      goombaJump = false;
+    }    
+    //굼바가 점프할때 블록이동
+    if (i > 0.3 && i < 0.7 && goombaX >= 190 && goombaX <= 310 && goombaSize == 1.5) b1 = 50*sin(PI*i); 
+      else if(i > 0.4 && i < 0.6 && goombaX >= 190 && goombaX <= 310 && b1 < 20) b1 += 2;
+      else b1 = 0;
+    if (i > 0.3 && i < 0.7 && goombaX >= 290 && goombaX <= 410 && goombaSize == 1.5) b2 = 50*sin(PI*i); 
+      else if (i > 0.4 && i < 0.6 && goombaX >= 290 && goombaX <= 410 && b2 < 20) b2 += 2;
+      else b2 = 0;
+    if (i > 0.3 && i < 0.7 && goombaX >= 390 && goombaX <= 510 && goombaSize == 1.5) b3 = 50*sin(PI*i); 
+      else if (i > 0.4 && i < 0.6 && goombaX >= 390 && goombaX <= 510 && b3 < 20) b3 += 2;
+      else b3 = 0;
+    if (i > 0.3 && i < 0.7 && goombaX >= 490 && goombaX <= 610 && goombaSize == 1.5) b4 = 50*sin(PI*i); 
+      else if (i > 0.4 && i < 0.6 && goombaX >= 490 && goombaX <= 610 && b4 < 20) b4 += 2;
+      else b4 = 0;
+  }
+}
 
-  // Easing을 사용하여 부드러운 이동을 구현합니다.
-  posX += dx * easing;
-  posY += dy * easing;
-
-  // 현재 위치를 바탕으로 그림을 그립니다.
-  translate(posX, posY);
-  if (sal >= 0.125) sal = 0.125;
-  scale(sal = sal + 0.01); // 캔버스 크기를 1/8로 축소합니다.
+function mushroomDraw(x,y,rotation, size) {
+  push();
+  translate(x, y);
+  scale(size/8);
 
   fill(0);
   strokeWeight(10);
@@ -242,6 +245,7 @@ function mushroomdraw() {
   fill(255, 0, 0);
   endShape(CLOSE);
   pop();
+    
   push();
   beginShape();
   fill(251, 206, 177);
@@ -253,22 +257,25 @@ function mushroomdraw() {
   fill(255, 255, 255);
   ellipse(402, 188, 200, 160);
   pop();
+  pop();
+}
 
-  // 목표지점에 도달했는지 확인하고, 도달했다면 목표지점을 변경합니다.
-  if (dist(posX, posY, targetX, targetY) < 1) {
-    targetX = 100;
-    targetY = 420;
-  }}
+function mushroomMove() {
+  mushX += mushM
+  if(mushX<135 && mushY<440) mushY += 4 ;
+  if(mushX<-10) mushM = 3;
+  if(mushX>710) mushM = -3;
 }
 
 function drawKiller(x,y, rotation, size) {
   push();
   kx=kx-3;
   if (kx<160) {
-  ky=ky+5; kx=160; kr=kr+0.5; ks=ks-0.015;
-    if (ks<0){ kx=1200; ky=50; kr=0; ks=0.7;
-}
-}             
+    ky=ky+5; kx=160; kr=kr+0.5; ks=ks-0.015;
+    if (ks<0) { 
+      kx=1200; ky=50; kr=0; ks=0.7;
+    }
+  }             
   noStroke();
   translate(x, y);
   rotate(rotation);
@@ -311,4 +318,34 @@ function drawKiller(x,y, rotation, size) {
   ellipse(-61,-17,10,15);
   ellipse(-28,6,9,6);
   pop();
+}
+
+function drawFireFlowerItem(x, y, rotation, size) {
+  push(); // 변환 상태 저장
+  strokeWeight(1);
+  translate(x, y);
+  rotate(rotation);
+  scale(size);
+
+  //  (빨간 원)
+  fill(255, 0, 0); // Red
+  ellipse(0, 0, 70, 40);
+
+  //  (하얀 원)
+  fill(255); // White
+  ellipse(0, 0, 50, 30);
+  rectMode(CENTER);
+
+  //  (눈)
+  fill(0); // Black
+  ellipse(-10, -5, 5, 5);
+  ellipse(10, -5, 5, 5);
+
+  // Draw stem (green rectangle)
+  fill(0, 255, 0); // Green
+  rect(2, 35, 10, 40, 20);
+  triangle(1, 55, 35, 1, 40, 30);
+  triangle(1, 55, -35, 1, -40, 30);
+  
+  pop(); // 변환 상태 복원
 }
