@@ -17,7 +17,6 @@ let targetY = 100; // 버섯 목표 Y 위치
 let easing = 0.1; // 이동 속도 (Easing)
 let sal = 0.0125; //버섯 크기
 
-
 let i = 0; // 굼바 점프 변수
 let goombaX = 150; //굼바 x좌표
 let goombaY = 450; //굼바 y좌표
@@ -26,19 +25,16 @@ let goombaSize = 1 //굼바의 크기(기본 100x100)
 let goombaJump = false; //굼바 현재 점프 상태
 let jumpHeight = 0; //굼바의 점프 높이
 
-let kx = 1000; 
-let ky = 50;
-let kr = 0;
-let ks = 0.7;
+let kx = 1000;  //killerX
+let ky = 50; //killerY
+let kr = 0; //killerRotation
+let ks = 0.7; ////killerSize
 
 function preload() {  // 이미지 미리 로드
   blockGround = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/ground.png');
   blockBrick = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/brick.png');
   blockItemBrick = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/itemBrick.png');
-function preload(){
-   img = loadImage("https://candyfunhouse.ca/cdn/shop/products/Candyfunhouse_supermariobros_coincandies_34g-Top-jpg-1.jpg?v=1628524712&width=1200")
-  jpg = loadImage("https://static.wikia.nocookie.net/mario/images/9/98/Empty_Block_NSMB_Wii_artwork.png/revision/latest?cb=20230915030712")
-}
+  
 }
 
 function setup() {
@@ -56,9 +52,11 @@ function draw() {
   image(blockGround, 500, 500, 100, 100);
   image(blockGround, 600, 500, 100, 100);
   image(blockGround, 700, 500, 100, 100);
-  if (eatb1 == 0) image(blockItemBrick, 200, 200 - b1, 100, 100); 
-  else image(blockBrick, 200, 200 - b1, 100, 100);
-   //벽돌생성, 굼바가 점프시 위로 이동
+
+  image(blockBrick, 0, 0, 100, 100); //킬러가 부딛히는 블록
+  
+  if (eatb1 == 0) image(blockItemBrick, 200, 200 - b1, 100, 100); //벽돌생성, 굼바가 점프시 위로 이동
+    else image(blockBrick, 200, 200 - b1, 100, 100);
   image(blockBrick, 300, 200 - b2, 100, 100);
   image(blockBrick, 400, 200 - b3, 100, 100);
   image(blockItemBrick, 500, 200 - b4, 100, 100);
@@ -73,8 +71,7 @@ function draw() {
     if (i > 1) {
       i = 0;
       goombaJump = false;
-    }
-    
+    }    
     if (i > 0.4 && i < 0.6 && goombaX >= 190 && goombaX <= 310) b1 = 20; //굼바가 점프할때 블록이동
       else b1 = 0;
     if (i > 0.4 && i < 0.6 && goombaX >= 290 && goombaX <= 410) b2 = 20;
