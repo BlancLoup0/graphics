@@ -56,8 +56,9 @@ function draw() {
   if(mushSpawn) {
     mushroomDraw(mushX, mushY - b1, mushRotation, mushSize); //버섯 소환
     mushroomMove();
+    mushRotation = (mushY - 140)/300*2*PI;
     let distance = dist(mushX + 50, mushY + 10, goombaX, goombaY);
-    if(distance<50) {
+    if(distance<70) {
       mushSpawn = 0;
       goombaSize = 1.5;
       goombaY -= 25
@@ -209,6 +210,7 @@ function mushroomDraw(x,y,rotation, size) {
   push();
   translate(x, y);
   scale(size/8);
+  rotate(rotation);
 
   fill(0);
   strokeWeight(10);
