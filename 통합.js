@@ -11,7 +11,7 @@ let b4 = 0; //블록 4 변수
 let mushX = 250; // 버섯 시작 X 위치
 let mushY = 170; //버섯 시작 y위치 
 let mushRotation = 0; //버섯 회전
-let mushSize = 1; //버섯 크기
+let mushSize = 0.1; //버섯 크기
 let mushSpawn = 0; //버섯 소환 
 let mushM = -2 //버섯섯 이동변수
 
@@ -59,10 +59,11 @@ function draw() {
     b1Hit = 1; //블록 변환
     mushSpawn = 1; 
   } //버섯 소환 체크
-  
+   
   if(mushSpawn) {
+    if(mushSize<1) mushSize+=0.02;
     mushroomDraw(mushX, mushY - b1, mushRotation, mushSize); //버섯 소환
-    mushroomMove();
+    if(mushSize > 1) mushroomMove();
     mushRotation = (mushY - 170)/300*2*PI;
     let distance = dist(mushX, mushY - 20, goombaX, goombaY);
     if(distance<20) {
@@ -372,7 +373,6 @@ function drawFireFlower(x, y, rotation, size) {
   rect(2, 35, 10, 40, 20);
   triangle(1, 55, 35, 1, 40, 30);
   triangle(1, 55, -35, 1, -40, 30);
-  
   pop(); // 변환 상태 복원
 }
 
