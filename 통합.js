@@ -8,8 +8,8 @@ let b2 = 0; //블록 2 변수
 let b3 = 0; //블록 3 변수
 let b4 = 0; //블록 4 변수
 
-let mushX = 200; // 버섯 시작 X 위치
-let mushY = 140; //버섯 시작 y위치 
+let mushX = 250; // 버섯 시작 X 위치
+let mushY = 170; //버섯 시작 y위치 
 let mushRotation = 0; //버섯 회전
 let mushSize = 1; //버섯 크기
 let mushSpawn = 0; //버섯 소환 
@@ -28,6 +28,12 @@ let ky = 50; //killerY
 let kr = 0; //killerRotation
 let ks = 0.7; ////killerSize
 
+let fx = 550;
+let fy = 250;
+let fr = 0;
+let fs = 0;
+let flowerSpawn = 0;
+
 function preload() {  // 이미지 미리 로드
   blockGround = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/ground.png');
   blockBrick = loadImage('https://raw.githubusercontent.com/BlancLoup0/graphics/main/marioBlock/brick.png');
@@ -41,6 +47,7 @@ function setup() {
 
 function draw() {
   background(220);
+  drawFireFlower(fx,fy,fr,fs); //꽃 그리기
   drawBlock();  
   
   goombaMove(); //굼바 움직이기
@@ -56,16 +63,14 @@ function draw() {
   if(mushSpawn) {
     mushroomDraw(mushX, mushY - b1, mushRotation, mushSize); //버섯 소환
     mushroomMove();
-    mushRotation = (mushY - 140)/300*2*PI;
-    let distance = dist(mushX + 50, mushY + 10, goombaX, goombaY);
-    if(distance<70) {
+    mushRotation = (mushY - 170)/300*2*PI;
+    let distance = dist(mushX, mushY - 20, goombaX, goombaY);
+    if(distance<20) {
       mushSpawn = 0;
       goombaSize = 1.5;
       goombaY -= 25
     }
   }
-  
-  drawFireFlowerItem(550, 150, 0, 1); //꽃 그리기
 }
 
 function drawBlock() { //블록을 생성하는 함수
@@ -217,33 +222,34 @@ function mushroomDraw(x,y,rotation, size) {
   stroke(0, 0, 0);
   push();
   beginShape();
-  curveVertex(216, 416);
-  curveVertex(140, 373);
-  curveVertex(97, 306);
-  curveVertex(110, 225);
-  curveVertex(129, 199);
-  curveVertex(163, 166);
-  curveVertex(247, 108);
-  curveVertex(287, 89);
-  curveVertex(323, 81);
-  curveVertex(384, 71);
-  curveVertex(451, 72);
-  curveVertex(509, 91);
-  curveVertex(595, 126);
-  curveVertex(648, 176);
-  curveVertex(697, 239);
-  curveVertex(695, 326);
-  curveVertex(635, 387);
-  curveVertex(591, 412);
-  curveVertex(592, 407);
-  curveVertex(535, 365);
-  curveVertex(568, 381);
-  curveVertex(522, 357);
-  curveVertex(464, 343);
-  curveVertex(402, 341);
-  curveVertex(344, 342);
-  curveVertex(287, 357);
-  curveVertex(241, 381);
+  curveVertex(-184, 176);
+  curveVertex(-260, 133);
+  curveVertex(-303, 66);
+  curveVertex(-290, -15);
+  curveVertex(-271, -41);
+  curveVertex(-237, -74);
+  curveVertex(-153, -132);
+  curveVertex(-113, -151);
+  curveVertex(-77, -159);
+  curveVertex(-16, -169);
+  curveVertex(51, -168);
+  curveVertex(109, -147);
+  curveVertex(195, -112);
+  curveVertex(248, -62);
+  curveVertex(297, 1);
+  curveVertex(295, 88);
+  curveVertex(235, 159);
+  curveVertex(191, 200);
+  curveVertex(192, 195);
+  curveVertex(135, 153);
+  curveVertex(168, 173);
+  curveVertex(122, 153);
+  curveVertex(64, 127);
+  curveVertex(2, 125);
+  curveVertex(-56, 126);
+  curveVertex(-113, 141);
+  curveVertex(-159, 165);
+
   fill(255, 0, 0);
   endShape(CLOSE);
   pop();
@@ -251,22 +257,22 @@ function mushroomDraw(x,y,rotation, size) {
   push();
   beginShape();
   fill(251, 206, 177);
-  ellipse(400, 400, 380, 145);
+  ellipse(0, 160, 380, 145);
   fill(0, 0, 0);
-  ellipse(347, 399, 20, 40);
-  ellipse(468, 400, 20, 40);
+  ellipse(-53, 159, 20, 40);
+  ellipse(68, 160, 20, 40);
   endShape(CLOSE);
   fill(255, 255, 255);
-  ellipse(402, 188, 200, 160);
+  ellipse(2, -52, 200, 160);
   pop();
   pop();
 }
 
 function mushroomMove() {
   mushX += mushM
-  if(mushX<135 && mushY<440) mushY += 4 ;
-  if(mushX<-10) mushM = 3;
-  if(mushX>710) mushM = -3;
+  if(mushX<185 && mushY<470) mushY += 4 ;
+  if(mushX<35) mushM = 3;
+  if(mushX>725) mushM = -3;
 }
 
 function drawKiller(x,y, rotation, size) {
@@ -322,8 +328,26 @@ function drawKiller(x,y, rotation, size) {
   pop();
 }
 
-function drawFireFlowerItem(x, y, rotation, size) {
+function drawFireFlower(x, y, rotation, size) {
   push(); // 변환 상태 저장
+  
+    if(b4 >= 20) flowerSpawn = 1;
+    if(flowerSpawn)
+    {
+      fs=fs+0.01; fy=fy-1;
+    if(fs>=1) fs=1;
+    if(fy<150) fy=150;
+    if(fs==1) {fr+=QUARTER_PI/7;
+    fx+=2; fy+=3;          }
+    if(fx>750) fx=750;
+  }
+  
+  
+  if(fy>800) {
+    flowerSpawn = 0;
+    fx=550; fy=250; fr=0; fs=0;
+  }
+  
   strokeWeight(1);
   translate(x, y);
   rotate(rotation);
@@ -350,4 +374,11 @@ function drawFireFlowerItem(x, y, rotation, size) {
   triangle(1, 55, -35, 1, -40, 30);
   
   pop(); // 변환 상태 복원
+}
+
+function fireFlowerMove() {
+    mushX += mushM
+  if(mushX<135 && mushY<440) mushY += 4 ;
+  if(mushX<-10) mushM = 3;
+  if(mushX>785) mushM = -3;
 }
